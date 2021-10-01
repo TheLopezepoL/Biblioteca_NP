@@ -1,9 +1,9 @@
-from Logica import Estudiante
+from Logica import Estudiante, Escuela
 
 
 class Bibliotecario:
     libros: list
-    escuelas: list
+    escuela: Escuela
 
     def __init__(self):
         self.libros = []
@@ -11,17 +11,15 @@ class Bibliotecario:
         return
 
     def validarUsuario(self, pUsuario: str, pContrasenha: str):
-        for escuela in self.escuelas:
-            for estudiante in escuela.estudiantes:
-                if estudiante.validarUsuario(pUsuario, pContrasenha):
-                    return True
+        for estudiante in self.escuela.estudiantes:
+            if estudiante.validarUsuario(pUsuario, pContrasenha):
+                return True
         return False
 
     def returnEstudianteXID(self, pEstudianteID: int):
-        for escuela in self.escuelas:
-            for estudiante in escuela.estudiantes:
-                if estudiante.carnet == pEstudianteID:
-                    return estudiante
+        for estudiante in self.escuela.estudiantes:
+            if estudiante.carnet == pEstudianteID:
+                return estudiante
         return None
 
     def returnLibroXID(self, pLibroID: int):
@@ -43,6 +41,17 @@ class Bibliotecario:
                 print("Libro no disponible")
         else:
             print("Estudiante y/o libro no encontrado(s)")
+        return
 
     def realizarDevolucion(self, pEstudianteID: int, pLibroID: int):
-        return
+        estudiante = self.returnEstudianteXID(pEstudianteID)
+        if estudiante is not None:
+            libro = estudiante.devolverLibro(pLibroID)
+            if libro is not None:
+                libro.isDisponible = True
+                return libro
+            else:
+                print("Libro no fue prestado al estudiante")
+        else:
+            print("Estudiante no encontrado")
+        return None
